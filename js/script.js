@@ -10,9 +10,9 @@ let essais = [
 ];
 let essaisCounter = 0;
 
-generateBtn.addEventListener("click", function() {
+generateBtn.addEventListener("click", function () {
   let choixUtilisateur = parseInt(numberInput.value);
-  
+
   if (essaisCounter < 3) {
     if (choixUtilisateur === secretNumber) {
       essais[essaisCounter].textContent = "Gagné 🙂 ! le numéro mystère était " + secretNumber + " ";
@@ -27,17 +27,17 @@ generateBtn.addEventListener("click", function() {
       essaisCounter++;
     }
   }
-  
+
   if (essaisCounter === 3) {
-    essais[essaisCounter-1].textContent = "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
+    essais[essaisCounter - 1].textContent = "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
     generateBtn.disabled = true;
     resetBtn.style.display = "block";
   }
-  
+
   numberInput.value = "";
 });
 
-resetBtn.addEventListener("click", function() {
+resetBtn.addEventListener("click", function () {
   generateBtn.disabled = false;
   essaisCounter = 0;
   secretNumber = Math.floor(Math.random() * max) + 1;
