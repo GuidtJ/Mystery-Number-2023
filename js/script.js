@@ -1,117 +1,152 @@
-// Déclaration de la valeur maximale pour le nombre mystère
-const max = 10;
+// Écouteur d'événement pour le chargement du document
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialisation des variables
+  let max = 10; // Valeur maximale par défaut
+  let secretNumber = Math.floor(Math.random() * max) + 1; // Génération d'un nombre aléatoire
+  let numberInput = document.getElementById("number"); // Récupération de l'élément pour entrer le nombre
+  let generateBtn = document.getElementById("generateBtn"); // Bouton pour générer le nombre
+  let resetBtn = document.getElementById("reset"); // Bouton pour réinitialiser le jeu
+  let restartBtn = document.getElementById("restart"); // Bouton pour rejouer
+  let essais = [
+    // Tableau pour stocker les éléments d'affichage des essais
+    document.getElementById("essai1"),
+    document.getElementById("essai2"),
+    document.getElementById("essai3"),
+  ];
+  let essaisCounter = 0; // Compteur d'essais
+  let gameInProgress = false; // Indicateur pour vérifier si le jeu est en cours
 
-// Génération du nombre mystère aléatoire entre 1 et 10 inclus
-let secretNumber = Math.floor(Math.random() * max) + 1;
-
-// Récupération de l'élément HTML correspondant au champ d'entrée pour le numéro choisi par l'utilisateur
-let numberInput = document.getElementById("number");
-
-// Récupération des éléments HTML correspondant aux boutons "Jouer" et "Rejouer"
-let generateBtn = document.getElementById("generateBtn");
-let resetBtn = document.getElementById("reset");
-
-// Création d'un tableau contenant les éléments HTML correspondant à chaque tentative d'affichage du résultat
-let essais = [
-  document.getElementById("essai1"),
-  document.getElementById("essai2"),
-  document.getElementById("essai3"),
-];
-
-// Compteur pour suivre le nombre de tentatives effectuées par l'utilisateur
-let essaisCounter = 0;
-
-// Ajout d'un gestionnaire d'événements pour la touche "Entrer"
-numberInput.addEventListener("keypress", function (event) {
-  // Vérification si la touche appuyée est "Entrer" (code 13)
-  if (event.key === "Enter") {
-    // Empêcher le comportement par défaut (soumission du formulaire)
-    event.preventDefault();
-    // Appeler la fonction pour exécuter le jeu
-    playGame();
-  }
-});
-
-// Fonction pour jouer au jeu
-function playGame() {
-  // Récupération de la valeur saisie par l'utilisateur
-  let choixUtilisateur = parseInt(numberInput.value);
-
-  // Vérification si l'utilisateur a saisi un chiffre
-  if (isNaN(choixUtilisateur)) {
-    // Affichage du message d'erreur
-    document.getElementById("error-message").style.display = "block";
-    return; // Arrêt de l'exécution de la fonction
-  } else {
-    // Masquage du message d'erreur s'il est affiché
-    document.getElementById("error-message").style.display = "none";
+  // Fonction pour mettre à jour le score et le stocker dans le stockage local
+  function updateScore(points) {
+    let score = localStorage.getItem("score")
+      ? parseInt(localStorage.getItem("score"))
+      : 0;
+    score += points;
+    document.getElementById("scoreValue").textContent = score;
+    localStorage.setItem("score", score.toString());
   }
 
-  // Vérification si l'utilisateur a encore des tentatives disponibles
-  if (essaisCounter < 3) {
-    // Vérification si l'utilisateur a trouvé le nombre mystère
-    if (choixUtilisateur === secretNumber) {
-      // Affichage du message de victoire
-      essais[essaisCounter].textContent =
-        "Gagné 🙂 ! le numéro mystère était " + secretNumber + " ";
-      // Désactivation du bouton "Jouer"
-      generateBtn.disabled = true;
-      // Affichage du bouton "Rejouer"
-      resetBtn.style.display = "block";
+  // Fonction pour jouer le jeu
+  function playGame() {
+    let choixUtilisateur = parseInt(numberInput.value);
+    // Vérification si le nombre choisi par l'utilisateur est valide
+    if (
+      isNaN(choixUtilisateur) ||
+      choixUtilisateur < 1 ||
+      choixUtilisateur > max
+    ) {
+      document.getElementById("error-message").style.display = "block"; // Affichage du message d'erreur
+      return;
     } else {
-      // Affichage du message indiquant si le nombre choisi est plus petit ou plus grand que le nombre mystère
-      if (choixUtilisateur < secretNumber) {
-        essais[essaisCounter].textContent =
-          "C'est ➕ que : " + choixUtilisateur + " ";
-      } else {
-        essais[essaisCounter].textContent =
-          "C'est ➖ que : " + choixUtilisateur + " ";
-      }
-      // Incrémentation du compteur de tentatives
-      essaisCounter++;
+      document.getElementById("error-message").style.display = "none"; // Masquage du message d'erreur
     }
+
+    // Vérification du nombre d'essais
+    if (essaisCounter < 3) {
+      // Si le nombre choisi est correct
+      if (choixUtilisateur === secretNumber) {
+        essais[essaisCounter].textContent =
+          "Gagné 🙂 ! le numéro mystère était " + secretNumber + " ";
+        generateBtn.disabled = true; // Désactivation du bouton pour générer
+        restartBtn.style.display = "block"; // Affichage du bouton pour rejouer
+        updateScore(10); // Mise à jour du score
+      } else {
+        // Si le nombre choisi est incorrect
+        if (choixUtilisateur < secretNumber) {
+          essais[essaisCounter].textContent =
+            "C'est ➕ que : " + choixUtilisateur + " ";
+        } else {
+          essais[essaisCounter].textContent =
+            "C'est ➖ que : " + choixUtilisateur + " ";
+        }
+        essaisCounter++; // Incrémentation du compteur d'essais
+      }
+    }
+
+    // Si le joueur a épuisé tous ses essais sans trouver le nombre mystère
+    if (essaisCounter === 3 && choixUtilisateur !== secretNumber) {
+      essais[essaisCounter - 1].textContent =
+        "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
+      generateBtn.disabled = true; // Désactivation du bouton pour générer
+      restartBtn.style.display = "block"; // Affichage du bouton pour rejouer
+      updateScore(-5); // Mise à jour du score
+    }
+    numberInput.value = ""; // Réinitialisation de l'entrée utilisateur
+    document.getElementById("resultList").style.display = "block"; // Affichage de la liste des résultats
+    document.getElementById("score").style.display = "block"; // Affichage du score
   }
 
-  // Vérification si l'utilisateur a épuisé toutes ses tentatives
-  if (essaisCounter === 3) {
-    // Affichage du message de défaite
-    essais[essaisCounter - 1].textContent =
-      "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
-    // Désactivation du bouton "Jouer"
-    generateBtn.disabled = true;
-    // Affichage du bouton "Rejouer"
-    resetBtn.style.display = "block";
-  }
+  // Écouteur d'événement pour la pression de la touche Entrée dans le champ de saisie
+  numberInput.addEventListener("keypress", function (event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      playGame(); // Appel de la fonction pour jouer
+    }
+  });
 
-  // Réinitialisation du champ d'entrée après chaque tentative
-  numberInput.value = "";
+  // Écouteur d'événement pour le clic sur le bouton de génération
+  generateBtn.addEventListener("click", function () {
+    if (!gameInProgress) {
+      playGame(); // Appel de la fonction pour jouer
+      gameInProgress = true; // Mise à jour de l'indicateur de jeu en cours
+    }
+  });
 
-  // Affichage de la liste des résultats
-  document.getElementById("resultList").style.display = "block";
-}
+  // Écouteur d'événement pour le clic sur le bouton de réinitialisation
+  resetBtn.addEventListener("click", function () {
+    generateBtn.disabled = false; // Réactivation du bouton pour générer
+    essaisCounter = 0; // Réinitialisation du compteur d'essais
+    secretNumber = Math.floor(Math.random() * max) + 1; // Génération d'un nouveau nombre mystère
+    for (let i = 0; i < 3; i++) {
+      essais[i].innerHTML = ""; // Réinitialisation de l'affichage des essais
+    }
+    numberInput.value = ""; // Réinitialisation de l'entrée utilisateur
+    restartBtn.style.display = "none"; // Masquage du bouton pour rejouer
+    gameInProgress = false; // Mise à jour de l'indicateur de jeu en cours
 
-// Ajout d'un gestionnaire d'événements pour le clic sur le bouton "Jouer"
-generateBtn.addEventListener("click", playGame);
+    // Réinitialisation du score
+    localStorage.removeItem("score");
+    document.getElementById("scoreValue").textContent = "0";
+  });
 
-// Ajout d'un gestionnaire d'événements pour le clic sur le bouton "Rejouer"
-resetBtn.addEventListener("click", function () {
-  // Masquage de la liste des résultats
-  document.getElementById("resultList").style.display = "none";
+  // Écouteur d'événement pour le clic sur le bouton pour rejouer
+  restartBtn.addEventListener("click", function () {
+    document.getElementById("resultList").style.display = "none"; // Masquage de la liste des résultats
+    generateBtn.disabled = false; // Réactivation du bouton pour générer
+    essaisCounter = 0; // Réinitialisation du compteur d'essais
+    secretNumber = Math.floor(Math.random() * max) + 1; // Génération d'un nouveau nombre mystère
+    for (let i = 0; i < 3; i++) {
+      essais[i].innerHTML = ""; // Réinitialisation de l'affichage des essais
+    }
+    numberInput.value = ""; // Réinitialisation de l'entrée utilisateur
+    restartBtn.style.display = "none"; // Masquage du bouton pour rejouer
+    gameInProgress = false; // Mise à jour de l'indicateur de jeu en cours
+  });
 
-  // Réinitialisation des variables et des éléments HTML
-  generateBtn.disabled = false;
-  essaisCounter = 0;
-  secretNumber = Math.floor(Math.random() * max) + 1;
-  for (let i = 0; i < 3; i++) {
-    essais[i].innerHTML = "";
-  }
-  numberInput.value = "";
-
-  // Masquage du bouton "Rejouer"
-  resetBtn.style.display = "none";
+  // Écouteur d'événement pour les changements de niveau de difficulté
+  document.querySelectorAll('input[name="difficulty"]').forEach((radio) => {
+    radio.addEventListener("change", function () {
+      // Vérification si le jeu est en cours
+      if (gameInProgress) {
+        this.checked = false; // Désélection de l'option
+        return;
+      }
+      // Mise à jour de la valeur maximale en fonction du niveau de difficulté sélectionné
+      switch (this.value) {
+        case "easy":
+          max = 10;
+          break;
+        case "medium":
+          max = 50;
+          break;
+        case "hard":
+          max = 100;
+          break;
+        default:
+          max = 10;
+      }
+      secretNumber = Math.floor(Math.random() * max) + 1; // Génération d'un nouveau nombre mystère
+      numberInput.max = max; // Mise à jour de la valeur maximale du champ de saisie
+    });
+  });
 });
-
-// JavaScript pour afficher le bouton "Rejouer" seulement si le joueur a gagné ou perdu
-function toggleResetButton(displayValue) {
-  resetBtn.style.display = displayValue;
-}
