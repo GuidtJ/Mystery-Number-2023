@@ -15,21 +15,25 @@ generateBtn.addEventListener("click", function () {
 
   if (essaisCounter < 3) {
     if (choixUtilisateur === secretNumber) {
-      essais[essaisCounter].textContent = "Gagné 🙂 ! le numéro mystère était " + secretNumber + " ";
+      essais[essaisCounter].textContent =
+        "Gagné 🙂 ! le numéro mystère était " + secretNumber + " ";
       generateBtn.disabled = true;
       resetBtn.style.display = "block";
     } else {
       if (choixUtilisateur < secretNumber) {
-        essais[essaisCounter].textContent = "C'est ➕ que : " + choixUtilisateur + " ";
+        essais[essaisCounter].textContent =
+          "C'est ➕ que : " + choixUtilisateur + " ";
       } else {
-        essais[essaisCounter].textContent = "C'est ➖ que : " + choixUtilisateur + " ";
+        essais[essaisCounter].textContent =
+          "C'est ➖ que : " + choixUtilisateur + " ";
       }
       essaisCounter++;
     }
   }
 
   if (essaisCounter === 3) {
-    essais[essaisCounter - 1].textContent = "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
+    essais[essaisCounter - 1].textContent =
+      "YOU LOSE 😔 ! Le nombre mystère était " + secretNumber + ".";
     generateBtn.disabled = true;
     resetBtn.style.display = "block";
   }
