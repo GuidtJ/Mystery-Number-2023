@@ -11,3 +11,40 @@ body {
 .nigma{
   width: 20%;
 }
+/* Pour les écrans jusqu'à 576px de large (téléphones) */
+@media (max-width: 576px) {
+  .container {
+    width: 100%;
+  }
+  .form-control {
+    width: 100%;
+  }
+}
+
+/* Pour les écrans de 576px à 768px de large (tablettes en mode portrait) */
+@media (min-width: 576px) and (max-width: 768px) {
+  .container {
+    width: 80%;
+  }
+}
+
+/* Pour les écrans de 768px à 992px de large (tablettes en mode paysage) */
+@media (min-width: 768px) and (max-width: 992px) {
+  .container {
+    width: 70%;
+  }
+}
+
+/* Pour les écrans de 992px à 1200px de large (petits ordinateurs portables) */
+@media (min-width: 992px) and (max-width: 1200px) {
+  .container {
+    width: 60%;
+  }
+}
+
+/* Pour les écrans de 1200px et plus (ordinateurs de bureau) */
+@media (min-width: 1200px) {
+  .container {
+    width: 50%;
+  }
+}
