@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("score").style.display = "block"; // Affichage du score
   }
 
-  // Écouteur d'événement pour la pression de la touche Entrée dans le champ de saisie
+  // Écouteur d'événement pour la pression de la touche "Entrée" dans le champ de saisie
   numberInput.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -86,10 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Écouteur d'événement pour le clic sur le bouton de génération
   generateBtn.addEventListener("click", function () {
-    if (!gameInProgress) {
-      playGame(); // Appel de la fonction pour jouer
-      gameInProgress = true; // Mise à jour de l'indicateur de jeu en cours
-    }
+    playGame(); // Appel de la fonction pour jouer
   });
 
   // Écouteur d'événement pour le clic sur le bouton de réinitialisation
