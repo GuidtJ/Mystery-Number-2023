@@ -11,6 +11,12 @@ body {
 .nigma{
   width: 20%;
 }
+/* Pour l'iPhone SE en mode portrait */
+@media (max-width: 320px) {
+  .container {
+    width: 100%;
+  }
+}
 /* Pour les écrans jusqu'à 576px de large (téléphones) */
 @media (max-width: 576px) {
   .container {
